@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Food Waste Tracking and Redistribution Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f3f6f4;
+      color: #20352b;
+    }
+    header {
+      background: #176b45;
+      color: white;
+      padding: 24px;
+      text-align: center;
+    }
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+    }
+    .card, .record {
+      background: white;
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px #00000012;
+    }
+    .number {
+      font-size: 28px;
+      font-weight: bold;
+      color: #176b45;
+    }
+    .records {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    select {
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+    .status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 12px;
+      background: #e3f5e8;
+      color: #176b45;
+      font-size: 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #64746a;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Food Waste Tracking & Redistribution Portal</h1>
+  <p>Connecting surplus food with community organizations</p>
+</header>
+
+<main>
+  <h2>Redistribution Status Dashboard</h2>
+  <section class="dashboard" id="dashboard"></section>
+
+  <label for="filter"><strong>Filter records by status:</strong></label>
+  <select id="filter">
+    <option value="All">All statuses</option>
+    <option value="Available">Available</option>
+    <option value="Reserved">Reserved</option>
+    <option value="Collected">Collected</option>
+    <option value="Redistributed">Redistributed</option>
+  </select>
+
+  <section class="records" id="records"></section>
+</main>
+
+<footer>Food Waste Tracking Portal | Academic Demonstration</footer>
+
+<script>
+const foodRecords = [
+  {
+    id: 1, food: "Vegetable Meals", provider: "Central University Canteen",
+    quantity: 40, deadline: "2026-12-15 18:00",
+    location: "Canteen Gate 1", organization: "Helping Hands",
+    status: "Available"
+  },
+  {
+    id: 2, food: "Fresh Bread", provider: "Green Leaf Restaurant",
+    quantity: 25, deadline: "2026-12-15 17:00",
+    location: "Restaurant Entrance", organization: "Food for All",
+    status: "Reserved"
+  },
+  {
+    id: 3, food: "Fruit Boxes", provider: "University Cafeteria",
+    quantity: 30, deadline: "2026-12-15 19:00",
+    location: "Block A Pickup Point", organization: "Helping Hands",
+    status: "Collected"
+  },
+  {
+    id: 4, food: "Cooked Rice", provider: "Sunrise Restaurant",
+    quantity: 35, deadline: "2026-12-15 16:30",
+    location: "Rear Service Gate", organization: "Community Care",
+    status: "Redistributed"
+  },
+  {
+    id: 5, food: "Packed Sandwiches", provider: "Campus Food Court",
+    quantity: 20, deadline: "2026-12-15 18:30",
+    location: "Food Court Counter", organization: "Food for All",
+    status: "Available"
+  },
+  {
+    id: 6, food: "Fresh Vegetables", provider: "Market Kitchen",
+    quantity: 50, deadline: "2026-12-15 20:00",
+    location: "Loading Area", organization: "Community Care",
+    status: "Reserved"
+  }
+];
+
+function renderDashboard() {
+  const statuses = ["Available", "Reserved", "Collected", "Redistributed"];
+  document.getElementById("dashboard").innerHTML =
+    statuses.map(status => {
+      const items = foodRecords.filter(r => r.status === status);
+      const quantity = items.reduce((sum, r) => sum + r.quantity, 0);
+      return `<div class="card">
+        <div>${status}</div>
+        <div class="number">${items.length}</div>
+        <div>${quantity} portions</div>
+      </div>`;
+    }).join("");
+}
+
+function renderRecords() {
+  const filter = document.getElementById("filter").value;
+  const shown = foodRecords.filter(r =>
+    filter === "All" || r.status === filter
+  );
+
+  document.getElementById("records").innerHTML = shown.map(r =>
+    `<article class="record">
+      <h3>${r.food}</h3>
+      <p><strong>Provider:</strong> ${r.provider}</p>
+      <p><strong>Quantity:</strong> ${r.quantity} portions</p>
+      <p><strong>Deadline:</strong> ${r.deadline}</p>
+      <p><strong>Pickup:</strong> ${r.location}</p>
+      <p><strong>Organization:</strong> ${r.organization}</p>
+      <p><strong>Status:</strong> <span class="status">${r.status}</span></p>
+    </article>`
+  ).join("");
+}
+
+document.getElementById("filter").addEventListener("change", renderRecords);
+renderDashboard();
+renderRecords();
+</script>
+</body>
+</html>
